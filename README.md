@@ -8,4 +8,8 @@ Qemu
 ______________________________
 # it does what
 it prints Welcome to QuectoOS 
+_____________________________
+if you run from VM
+you will see this
+![][(images/1.png)]
 
