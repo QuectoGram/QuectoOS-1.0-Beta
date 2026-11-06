@@ -1,3 +1,11 @@
+# BO
+*.bin
+*.img
+*.iso
+*.o
+*.sys
+
+
 # QuectoOS Ingnores
 
 kernel.cpp
