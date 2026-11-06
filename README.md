@@ -5,3 +5,7 @@ c++ Assembly, python
 _______________________________
 # Requirement
 Qemu
+______________________________
+# it does what
+it prints Welcome to QuectoOS 
+
