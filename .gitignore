@@ -1,0 +1,9 @@
+# QuectoOS Ingnores
+
+kernel.cpp
+README.md
+entry.asm
+linker.ld
+boot.asm
+buildimg.py
+runqemu\run.bat
