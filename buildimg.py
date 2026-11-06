@@ -1,4 +1,4 @@
-import subprocess
+-import subprocess
 import os
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -24,7 +24,7 @@ def build():
     run_cmd('objcopy -O binary kernel.exe kernel.bin')
     
     kernel_path = os.path.join(BASE_DIR, "kernel.bin")
-    img_path = os.path.join(BASE_DIR, "QuectoOS.img")
+    img_path = os.path.join(BASE_DIR, "QuectoOS-1.0.img")
     
     FLOPPY_SIZE = 1474560
     
@@ -38,7 +38,7 @@ def build():
         if current_size < FLOPPY_SIZE:
             outfile.write(b'\x00' * (FLOPPY_SIZE - current_size))
             
-    print("Build successful! QuectoOS.img created.")
+    print("Build successful! QuectoOS-1.0.img created.")
 
 if __name__ == "__main__":
     build()
