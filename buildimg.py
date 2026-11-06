@@ -24,7 +24,7 @@ def build():
     run_cmd('objcopy -O binary kernel.exe kernel.bin')
     
     kernel_path = os.path.join(BASE_DIR, "kernel.bin")
-    img_path = os.path.join(BASE_DIR, "osexample.img")
+    img_path = os.path.join(BASE_DIR, "QuectoOS.img")
     
     FLOPPY_SIZE = 1474560
     
@@ -38,7 +38,7 @@ def build():
         if current_size < FLOPPY_SIZE:
             outfile.write(b'\x00' * (FLOPPY_SIZE - current_size))
             
-    print("Build successful! osexample.img created.")
+    print("Build successful! QuectoOS.img created.")
 
 if __name__ == "__main__":
     build()
