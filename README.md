@@ -11,5 +11,5 @@ it prints Welcome to QuectoOS
 _____________________________
 if you run from VM
 you will see this
-![][(images/1.png)]
+![](images/1.png)
 
