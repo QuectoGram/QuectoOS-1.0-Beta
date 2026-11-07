@@ -18,7 +18,7 @@ def build_and_run():
     run_cmd('objcopy -O binary kernel.exe kernel.bin')
     kernel_path = os.path.join(BASE_DIR, "kernel.bin")
     img_path = os.path.join(BASE_DIR, "QuectoOS-1.0-Beta.img")
-    print(f"Creating raw disk image at: {img_path}")
+    print(f"Writing raw binary image to: {img_path}")
     with open(img_path, "wb") as outfile:
         with open(boot_path, "rb") as infile:
             outfile.write(infile.read())
@@ -29,36 +29,39 @@ def build_and_run():
         if current_size < floppy_size:
             outfile.write(b'\x00' * (floppy_size - current_size))
     iso_path = os.path.join(BASE_DIR, "QuectoOS-1.0-Beta.iso")
-    iso_dir = os.path.join(BASE_DIR, "iso_root")
-    os.makedirs(iso_dir, exist_ok=True)
-    iso_img_copy = os.path.join(iso_dir, "floppy.img")
-    with open(img_path, "rb") as src, open(iso_img_copy, "wb") as dst:
-        dst.write(src.read())
-
-    print("--- Packaging into ISO 9660 ---")
-    iso_built = False
-    try:
-        run_cmd(f'xorriso -as mkisofs -o "{iso_path}" -b floppy.img "{iso_dir}"')
-        iso_built = True
-    except RuntimeError:
-        pass
-    if not iso_built:
-        try:
-            run_cmd(f'genisoimage -o "{iso_path}" -b floppy.img "{iso_dir}"')
-            iso_built = True
-        except RuntimeError:
-            pass
-    if not iso_built:
-        print("\n[WARNING] 'xorriso' or 'genisoimage' not found in your MSYS2 environment.")
-        print("To install xorriso via MSYS2 UCRT64 terminal, run:")
-        print("    pacman -S mingw-w64-ucrt64-xorriso")
-        print("For now, copying the valid 1.44MB .img file as the .iso fallback so you can still test.")
-        with open(img_path, "rb") as src, open(iso_path, "wb") as dst:
-            dst.write(src.read())
-    print(f"\nBuild successful! Created '{img_path}' and '{iso_path}'.")
-    print("Launching QEMU...")
-    run_cmd(f'qemu-system-i386 -drive format=raw,file="{img_path}" -boot c -net none -no-reboot')
+    print(f"Writing optical ISO image to: {iso_path}")
+    with open(img_path, "rb") as f:
+        img_data = f.read()
+    SECTOR_SIZE = 2048
+    img_sectors = len(img_data) // SECTOR_SIZE
+    if len(img_data) % SECTOR_SIZE != 0:
+        img_sectors += 1
+    iso_size = (32 + img_sectors + 10) * SECTOR_SIZE
+    iso_image = bytearray(iso_size)
+    def write_sector(sector_num, data):
+        offset = sector_num * SECTOR_SIZE
+        iso_image[offset:offset+len(data)] = data
+    pvd = bytearray(SECTOR_SIZE)
+    pvd[0] = 1
+    pvd[1:6] = b'CD001'
+    pvd[6] = 1
+    pvd[80:92] = b'QUECTOOS_ISO'
+    total_sectors = len(iso_image) // SECTOR_SIZE
+    pvd[80:84] = total_sectors.to_bytes(4, 'little')
+    pvd[84:88] = total_sectors.to_bytes(4, 'big')
+    pvd[128:130] = (2048).to_bytes(2, 'little')
+    pvd[132:136] = (2048).to_bytes(4, 'little')
+    pvd[136:140] = (2048).to_bytes(4, 'big')
+    write_sector(16, pvd)
+    vdt = bytearray(SECTOR_SIZE)
+    vdt[0] = 255
+    vdt[1:6] = b'CD001'
+    vdt[6] = 1
+    write_sector(17, vdt)
+    with open(iso_path, "wb") as f:
+        f.write(iso_image)
+    print(f"Build successful! Created:\n - {img_path} ({os.path.getsize(img_path)} bytes)\n - {iso_path} ({os.path.getsize(iso_path)} bytes)")
+    print("Launching QEMU via floppy emulation (-fda)...")
+    run_cmd(f'qemu-system-i386 -fda "{img_path}" -boot a -net none -no-reboot')
 if __name__ == "__main__":
     build_and_run()
-
-
