@@ -3,6 +3,8 @@
 ; ===================================================
 ;              Bits: 16, 32
 ;              Written with: Assembly
+;              Lines: 58
+;              Made With: User123573
 ; ===================================================
 
 
@@ -53,4 +55,5 @@ gdt_end:
 gdt_descriptor:
     dw gdt_end - gdt_start - 1
     dd gdt_start
+; Code Done!
 
