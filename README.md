@@ -13,4 +13,5 @@ if you run from VM
 you will see this
 ![](images/1.png)
 _____________________________
+Download at Release
 
