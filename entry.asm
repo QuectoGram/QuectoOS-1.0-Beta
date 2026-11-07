@@ -20,15 +20,12 @@ extern _kernel_main
 
 _start:
     cli
-    
-    ; Force a 32-bit address relocation for the GDT pointer
     lgdt [dword gdt_descriptor]
     
     mov eax, cr0
     or eax, 1
     mov cr0, eax
     
-    ; Force a 32-bit operand far jump to clear truncation limits
     jmp dword 0x08:init_pm
 
 [BITS 32]
