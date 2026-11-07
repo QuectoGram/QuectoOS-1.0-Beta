@@ -5,6 +5,7 @@
 ;              Written with: Assembly
 ;              Lines: 58
 ;              Made With: User123573
+;              Details: (Empty)
 ; ===================================================
 
 
