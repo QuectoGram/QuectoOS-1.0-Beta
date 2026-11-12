@@ -4,7 +4,7 @@ ________________________________
 c++ Assembly, python
 _______________________________
 # Requirement
-Qemu or Bochs
+Qemu
 ______________________________
 # it does what
 it prints Welcome to QuectoOS 
